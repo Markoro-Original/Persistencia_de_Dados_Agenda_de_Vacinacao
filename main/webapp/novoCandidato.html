@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Candidatos</title>
+</head>
+<body>
+<h1>Adicionar Candidato</h1>
+
+<form action="controlecandidato" method="post">
+
+  <input type="hidden" name="acao" value="adicionar"/>
+  Codigo:
+  <input type="text" value="" name="txtCodigo" size="12"/>
+  <br>
+  Nome:
+  <input type="text" value="" name="txtNome" size="60"/>
+  <br>
+  Sexo:
+  <select name="selSexo">
+    <option value="M">Masculino</option>
+    <option value="F">Feminino</option>
+  </select>
+  <br>
+  Data de Nascimento:
+  <input type="date" value="" name="dtDataNasc" size="60"/>
+  <br>
+  Cargo Pretendido:
+  <input type="text" value="" name="txtCargoPretendido" size="25"/>
+  <br>
+  Texto do Currículo:
+  <input type="text" value="" name="txtTextoCurriculo" size="800"/>
+  <br>
+
+  <br><br>
+  <input type="submit" value="Salvar"/>
+
+</form>
+
+<br>
+<a href="index.html">Retornar ao Menu Principal</a>
+
+</body>
+</html>
