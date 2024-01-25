@@ -1,4 +1,4 @@
-package biblioteca;
+package visao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,7 +8,6 @@ import modelo.*;
 import util.*;
 
 import javax.persistence.EntityManager;
-import java.util.Date;
 
 public class Principal {
 

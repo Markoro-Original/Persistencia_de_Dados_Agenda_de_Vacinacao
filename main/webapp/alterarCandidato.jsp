@@ -1,6 +1,6 @@
 <%@ page import="negocio.Candidato" %>
 <%@ page import="java.util.List" %>
-<%@ page import="biblioteca.CandidatoDAO" %>
+<%@ page import="visao.CandidatoDAO" %>
 <%@ page import="controle.ControleCandidato" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
