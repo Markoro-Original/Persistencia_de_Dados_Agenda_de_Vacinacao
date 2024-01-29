@@ -12,62 +12,79 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="UTF-8">
-  <title>Novo Usuário</title>
+  <title>Novo Agendamento</title>
 </head>
 <body>
-<h1>Dados do Usuário</h1>
 
-<form action="agendacontrol" method="post">
+<h1 style="text-align: center;">Dados do Agendamento</h1>
 
-  <input type="hidden" name="acao" value="adicionar"/>
-  Usuário:
-  <select name="usuarioId">
-    <option value="">-</option>
-    <%
-      EntityManagerFactory emf = Persistence.createEntityManagerFactory("vacinacao");
-      EntityManager em = emf.createEntityManager();
+<h2 style="text-align: center;">
+  <a href="${pageContext.request.contextPath}/agendacontrol?filtroSituacao=">Listar agendamentos</a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="index.jsp">Menu Principal</a>
+</h2>
 
-      List<Usuario> listaUsuarios = new UsuarioDAO(em).listarUsuarios();
+<div style="text-align: center; font-size: larger;">
+  <form action="agendacontrol" method="post">
 
-      for (Usuario usuario : listaUsuarios){
-    %>
-    <option value="<%=usuario.getId()%>"><%=usuario.getNome()%></option>
-    <%
-      }
-    %>
-  </select>
-  <br>
-  Vacina:
-  <select name="vacinaId">
-    <option value="">-</option>
-    <%
-      List<Vacina> listaVacinas = new VacinaDAO(em).listarVacinas();
+    <div align="center" style="font-size: larger;">
+      <table border="1" cellpadding="5">
 
-      for (Vacina vacina : listaVacinas){
-    %>
-    <option value="<%=vacina.getId()%>"><%=vacina.getTitulo()%></option>
-    <%
-      }
-    %>
-  </select>
-  <br>
-  Data:
-  <input type="date" value="" name="data" size="60"/>
-  <br>
-  Horário:
-  <input type="time" value="" name="hora" size="60"/>
-  <br>
-  Observação:
-  <input type="text" value="" name="observacao" size="200"/>
-  <br>
+        <input type="hidden" name="acao" value="adicionar"/>
+        <tr>
+          <th align="left">Usuário:</th>
+          <td><select name="usuarioId">
+          <option value="">-</option>
+          <%
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("vacinacao");
+            EntityManager em = emf.createEntityManager();
 
-  <br><br>
-  <input type="submit" value="Salvar" name="tipoSalvar"/>
+            List<Usuario> listaUsuarios = new UsuarioDAO(em).listarUsuarios();
 
-</form>
+            for (Usuario usuario : listaUsuarios){
+          %>
+          <option value="<%=usuario.getId()%>"><%=usuario.getNome()%></option>
+          <%
+            }
+          %>
+        </select></td>
+        </tr>
+        <tr>
+          <th align="left">Vacina:</th>
+          <td><select name="vacinaId">
+          <option value="">-</option>
+          <%
+            List<Vacina> listaVacinas = new VacinaDAO(em).listarVacinas();
 
-<br>
-<a href="index.jsp">Retornar ao Menu Principal</a>
+            for (Vacina vacina : listaVacinas){
+          %>
+          <option value="<%=vacina.getId()%>"><%=vacina.getTitulo()%></option>
+          <%
+            }
+          %>
+        </select></td>
+        </tr>
+        <tr>
+          <th align="left">Data:</th>
+          <td><input type="date" value="" name="data" size="60"/></td>
+        </tr>
+        <tr>
+          <th align="left">Horário:</th>
+          <td><input type="time" value="" name="hora" size="60"/></td>
+        </tr>
+        <tr>
+          <th align="left">Observação:</th>
+          <td><input type="text" value="" name="observacao" size="60"/></td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="submit" value="Salvar" name="tipoSalvar"/>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </form>
+</div>
 
 </body>
 </html>

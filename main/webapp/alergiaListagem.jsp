@@ -10,44 +10,53 @@
 </head>
 <body>
 
-<h1>Lista de Alergias</h1>
+<h1 style="text-align: center;">Lista de Alergias</h1>
 
-<form action="${pageContext.request.contextPath}/alergiacontrol" method="get">
-    <label for="alergiasMaisComuns">Ordenar:</label>
-    <select name="alergiasMaisComuns" id="alergiasMaisComuns">
-        <option value="0">Por ID</option>
-        <option value="1">Mais comuns</option>
-    </select>
-    <button type="submit">Ordenar</button>
-</form>
+<h2 style="text-align: center;">
+    <a href="novaAlergia.jsp">Adicionar alergia</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="index.jsp">Menu Principal</a>
+</h2>
 
-<table border="1">
-    <tr>
-        <th>Id</th>
-        <th>Nome</th>
-        <th>Nº de Pessoas com a Alergia</th>
-        <th>Ação:</th>
-    </tr>
+<div style="text-align: center; font-size: larger;">
+    <form action="${pageContext.request.contextPath}/alergiacontrol" method="get">
+        <label for="alergiasMaisComuns">Ordenar:</label>
+        <select name="alergiasMaisComuns" id="alergiasMaisComuns">
+            <option value="0">Por ID</option>
+            <option value="1">Mais comuns</option>
+        </select>
+        <button type="submit">Ordenar</button>
+    </form>
+</div>
 
-    <c:forEach var="alergia" items="${listaAlergias}">
-    <tr>
-        <td>${alergia.id}</td>
-        <td>${alergia.nome}</td>
-        <td>${fn:length(alergia.usuarios)}</td>
-        <td>
-            <br>
-            <form action="alergiacontrol" method="post">
-                <input type="hidden" name="acao" value="delete"/>
-                <input type="hidden" name="deleteId" value="${alergia.id}"/>
-                <input type="submit" value="Deletar"/>
-            </form>
-            <br>
-        </td>
+<div align="center">
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Id</th>
+            <th>Nome</th>
+            <th>Nº de Pessoas com a Alergia</th>
+            <th>Ação:</th>
+        </tr>
 
-    </tr>
-    </c:forEach>
+        <c:forEach var="alergia" items="${listaAlergias}">
+            <tr>
+                <td>${alergia.id}</td>
+                <td>${alergia.nome}</td>
+                <td>${fn:length(alergia.usuarios)}</td>
+                <td>
+                    <br>
+                    <form action="alergiacontrol" method="post">
+                        <input type="hidden" name="acao" value="delete"/>
+                        <input type="hidden" name="deleteId" value="${alergia.id}"/>
+                        <input type="submit" value="Deletar"/>
+                    </form>
+                    <br>
+                </td>
 
-</table>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
 
 </body>
 </html>

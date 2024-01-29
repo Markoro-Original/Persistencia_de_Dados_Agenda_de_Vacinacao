@@ -1,7 +1,5 @@
 package util;
 
-import modelo.Agenda;
-import modelo.SituacaoAgenda;
 import modelo.Usuario;
 
 import javax.persistence.EntityManager;

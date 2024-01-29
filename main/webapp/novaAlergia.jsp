@@ -6,21 +6,33 @@
     <title>Nova Alergia</title>
 </head>
 <body>
-<h1>Dados da Alergia</h1>
+<h1 style="text-align: center;">Dados da Alergia</h1>
 
-<form action="alergiacontrol" method="post">
+<h2 style="text-align: center;">
+    <a href="${pageContext.request.contextPath}/alergiacontrol?alergiasMaisComuns=0">Lista de alergias</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="index.jsp">Menu Principal</a>
+</h2>
 
-    <input type="hidden" name="acao" value="adicionar"/>
-    Nome:
-    <input type="text" value="" name="nome" size="60"/>
+<div style="text-align: center; font-size: larger;">
+    <form action="alergiacontrol" method="post">
 
-    <br><br>
-    <input type="submit" value="Salvar"/>
+        <div align="center" style="font-size: larger;">
+            <table border="1" cellpadding="5">
 
-</form>
+                <input type="hidden" name="acao" value="adicionar"/>
+                <tr>
+                    <th align="left">Nome:</th>
+                    <td><input type="text" value="" name="nome" size="30"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center"><input type="submit" value="Salvar"/></td>
+                </tr>
+            </table>
+        </div>
 
-<br>
-<a href="index.jsp">Retornar ao Menu Principal</a>
+    </form>
+</div>
 
 </body>
 </html>

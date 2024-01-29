@@ -29,23 +29,23 @@ public class AgendaDAO {
     }
 
     public List<Agenda> listarAgendas() {
-        return em.createQuery("SELECT u FROM Agenda u ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END", Agenda.class).getResultList();
+        return em.createQuery("SELECT u FROM Agenda u ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END, u.data ASC", Agenda.class).getResultList();
     }
 
     public List<Agenda> listarAgendasPorSituacao(String situacao) {
-        return em.createQuery("SELECT u FROM Agenda u WHERE u.situacao = :situacao", Agenda.class)
+        return em.createQuery("SELECT u FROM Agenda u WHERE u.situacao = :situacao ORDER BY u.data ASC", Agenda.class)
                 .setParameter("situacao", SituacaoAgenda.valueOf(situacao))
                 .getResultList();
     }
 
     public List<Agenda> listarAgendasPorData(Date data){
-        return em.createQuery("SELECT u FROM Agenda u WHERE cast(u.data as date) = :data ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END", Agenda.class)
+        return em.createQuery("SELECT u FROM Agenda u WHERE cast(u.data as date) = :data ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END, u.data ASC", Agenda.class)
                 .setParameter("data", data)
                 .getResultList();
     }
 
     public List<Agenda> listaAgendasPorUserID(int id){
-        return em.createQuery("SELECT u FROM Agenda u WHERE u.usuario.id = :id ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END", Agenda.class)
+        return em.createQuery("SELECT u FROM Agenda u WHERE u.usuario.id = :id ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END, u.data ASC", Agenda.class)
                 .setParameter("id", id)
                 .getResultList();
     }
