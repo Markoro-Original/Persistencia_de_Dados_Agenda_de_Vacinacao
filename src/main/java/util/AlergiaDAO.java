@@ -1,6 +1,7 @@
 package util;
 
 import modelo.Alergia;
+import modelo.Vacina;
 
 import javax.persistence.EntityManager;
 import java.util.List;

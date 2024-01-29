@@ -1,8 +1,10 @@
 package control;
 
 import modelo.Usuario;
+import modelo.Vacina;
 import util.JPAUtil;
 import util.UsuarioDAO;
+import util.VacinaDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

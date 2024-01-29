@@ -1,7 +1,10 @@
 package control;
 
+import modelo.Alergia;
 import modelo.Vacina;
+import util.AlergiaDAO;
 import util.JPAUtil;
+import util.UsuarioDAO;
 import util.VacinaDAO;
 
 import javax.persistence.EntityManager;
@@ -18,8 +21,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-@WebServlet("/vacinacontrol")
-public class VacinaControl extends HttpServlet {
+@WebServlet("/alergiacontrol")
+public class AlergiaControl extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
     private EntityManagerFactory emf;
 
@@ -30,32 +34,30 @@ public class VacinaControl extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String vacinasMaisAgendadas = request.getParameter("vacinasMaisAgendadas");
-        List<Vacina> listaVacinas;
+
+        String alergiasMaisComuns = request.getParameter("alergiasMaisComuns");
+        List<Alergia> listaAlergias;
 
         EntityManager em = emf.createEntityManager();
 
         try {
-            VacinaDAO vacinaDAO = new VacinaDAO(em);
+            AlergiaDAO alergiaDAO = new AlergiaDAO(em);
 
-            if(vacinasMaisAgendadas != null && Integer.parseInt(vacinasMaisAgendadas) != 0){
-                listaVacinas = vacinaDAO.listarVacinasMaisAgendadas();
+            if(alergiasMaisComuns != null && Integer.parseInt(alergiasMaisComuns) != 0){
+                listaAlergias = alergiaDAO.listarAlergiasMaisComuns();
             } else {
-                listaVacinas = vacinaDAO.listarVacinas();
+                listaAlergias = alergiaDAO.listarAlergias();
             }
 
-            request.setAttribute("listaVacinas", listaVacinas);
+            request.setAttribute("listaAlergias", listaAlergias);
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("vacinaListagem.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("alergiaListagem.jsp");
             dispatcher.forward(request, response);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
         } finally {
             if (em != null && em.isOpen()) {
                 em.close();
             }
         }
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -63,43 +65,32 @@ public class VacinaControl extends HttpServlet {
 
         if(acao.equals("adicionar")){
             try {
-                adicionarVacina(request, response);
+                adicionarAlergia(request, response);
             } catch (ParseException e){
                 throw new RuntimeException(e);
             }
         }
         if(acao.equals("delete")){
             try {
-                deletarVacina(request, response);
+                deletarAlergia(request, response);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public void adicionarVacina(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    public void adicionarAlergia(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
 
-        String titulo = request.getParameter("titulo");
-        String descricao = request.getParameter("descricao");
-        int doses = Integer.parseInt(request.getParameter("doses"));
-
-        Vacina vacina = new Vacina(titulo, descricao, doses);
-
-        if (doses != 1) {
-            int periodicidade = Integer.parseInt(request.getParameter("periodicidade"));
-            int intervalo = Integer.parseInt(request.getParameter("intervalo"));
-
-            vacina.setPeriodicidade(periodicidade);
-            vacina.setIntervalo(intervalo);
-        }
+        String nome = request.getParameter("nome");
+        Alergia alergia = new Alergia(nome);
 
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         try {
             transaction.begin();
-            VacinaDAO vacinaDAO = new VacinaDAO(em);
-            vacinaDAO.incluir(vacina);
+            AlergiaDAO alergiaDAO = new AlergiaDAO(em);
+            alergiaDAO.incluir(alergia);
             transaction.commit();
 
             response.sendRedirect("index.jsp");
@@ -115,7 +106,7 @@ public class VacinaControl extends HttpServlet {
         }
     }
 
-    public void deletarVacina(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    public void deletarAlergia(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         int id = Integer.parseInt(request.getParameter("deleteId"));
 
         EntityManager em = JPAUtil.getEntityManager();
@@ -123,11 +114,11 @@ public class VacinaControl extends HttpServlet {
 
         try {
             transaction.begin();
-            VacinaDAO vacinaDAO = new VacinaDAO(em);
-            vacinaDAO.excluir(id);
+            AlergiaDAO alergiaDAO = new AlergiaDAO(em);
+            alergiaDAO.excluir(id);
             transaction.commit();
 
-            response.sendRedirect("vacinacontrol");
+            response.sendRedirect("alergiacontrol");
 
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
