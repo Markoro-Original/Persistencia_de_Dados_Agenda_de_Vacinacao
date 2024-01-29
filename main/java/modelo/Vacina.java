@@ -28,13 +28,11 @@ public class Vacina {
 
     }
 
-    public Vacina(String titulo, String descricao, int doses, int periodicidade, int intervalo) {
+    public Vacina(String titulo, String descricao, int doses) {
         super();
         this.titulo = titulo;
         this.descricao = descricao;
         this.doses = doses;
-        this.periodicidade = periodicidade;
-        this.intervalo = intervalo;
     }
 
     public void adicionarAgenda(Agenda agenda) {

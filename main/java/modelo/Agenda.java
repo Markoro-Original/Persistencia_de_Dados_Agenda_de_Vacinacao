@@ -34,12 +34,11 @@ public class Agenda {
 
     }
 
-    public Agenda(Date data, String hora, SituacaoAgenda situacao, Date dataSituacao, String observacoes, Usuario usuario, Vacina vacina) {
+    public Agenda(Date data, String hora, SituacaoAgenda situacao, String observacoes, Usuario usuario, Vacina vacina) {
         super();
         this.data = data;
         this.hora = hora;
         this.situacao = situacao;
-        this.dataSituacao = dataSituacao;
         this.observacoes = observacoes;
         this.usuario = usuario;
         this.vacina = vacina;

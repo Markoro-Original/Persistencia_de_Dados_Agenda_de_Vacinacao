@@ -1,9 +1,10 @@
 package util;
 
 import modelo.Agenda;
-import modelo.Usuario;
+import modelo.SituacaoAgenda;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
 
 public class AgendaDAO {
@@ -18,16 +19,34 @@ public class AgendaDAO {
         this.em.persist(agenda);
     }
 
-    public Agenda buscar(long id) {
+    public Agenda buscar(int id) {
         return this.em.find(Agenda.class, id);
     }
 
-    public void excluir(long id) {
+    public void excluir(int id) {
         Agenda agenda = em.find(Agenda.class, id);
         em.remove(agenda);
     }
 
     public List<Agenda> listarAgendas() {
-        return em.createQuery("SELECT u FROM Agenda u", Agenda.class).getResultList();
+        return em.createQuery("SELECT u FROM Agenda u ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END", Agenda.class).getResultList();
+    }
+
+    public List<Agenda> listarAgendasPorSituacao(String situacao) {
+        return em.createQuery("SELECT u FROM Agenda u WHERE u.situacao = :situacao", Agenda.class)
+                .setParameter("situacao", SituacaoAgenda.valueOf(situacao))
+                .getResultList();
+    }
+
+    public List<Agenda> listarAgendasPorData(Date data){
+        return em.createQuery("SELECT u FROM Agenda u WHERE cast(u.data as date) = :data ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END", Agenda.class)
+                .setParameter("data", data)
+                .getResultList();
+    }
+
+    public List<Agenda> listaAgendasPorUserID(int id){
+        return em.createQuery("SELECT u FROM Agenda u WHERE u.usuario.id = :id ORDER BY CASE u.situacao WHEN 'AGENDADO' THEN 1 WHEN 'REALIZADO' THEN 2 WHEN 'CANCELADO' THEN 3 ELSE 4 END", Agenda.class)
+                .setParameter("id", id)
+                .getResultList();
     }
 }
