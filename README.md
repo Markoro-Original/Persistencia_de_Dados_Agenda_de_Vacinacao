@@ -10,3 +10,4 @@
 - Sistema de Gerenciamento de Banco de Dados: PostgreSQL
 - Front-end: Servlets, JSP e HTML
 - Gerência de pacotes: Maven
+- Servidor: Tomcat
