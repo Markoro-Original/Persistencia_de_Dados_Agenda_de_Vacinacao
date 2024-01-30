@@ -2,8 +2,10 @@ package util;
 
 import modelo.Agenda;
 import modelo.SituacaoAgenda;
+import modelo.Usuario;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +23,26 @@ public class AgendaDAO {
 
     public Agenda buscar(int id) {
         return this.em.find(Agenda.class, id);
+    }
+
+    public List<Agenda> buscarPorNomeUsuario(String nomeUsuario) {
+        try {
+            return em.createQuery("SELECT a FROM Agenda a WHERE lower(a.usuario.nome) = :nomeUsuario", Agenda.class)
+                    .setParameter("nomeUsuario", nomeUsuario.toLowerCase())
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public List<Agenda> buscarPorVacina(String vacina) {
+        try {
+            return em.createQuery("SELECT a FROM Agenda a WHERE lower(a.vacina.titulo) = :vacina", Agenda.class)
+                    .setParameter("vacina", vacina.toLowerCase())
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void excluir(int id) {

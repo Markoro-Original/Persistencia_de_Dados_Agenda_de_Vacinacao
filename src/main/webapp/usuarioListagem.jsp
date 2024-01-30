@@ -19,7 +19,17 @@
   <a href="index.jsp">Menu Principal</a>
 </h2>
 
-<div style="text-align: center; font-size: larger;">
+<div style="display: flex; justify-content: center; gap: 20px;">
+
+  <form action="usuariocontrol" method="post">
+
+    <input type="hidden" name="acao" value="consultar"/>
+    Pesquisar por Nome:
+    <input type="text" value="" name="nome" size="5"/>
+
+    <button type="submit">Pesquisar</button>
+  </form>
+
   <form action="${pageContext.request.contextPath}/usuariocontrol" method="get">
     <label for="filtroUF">Filtro de UF:</label>
     <select name="filtroUF" id="filtroUF">
@@ -59,6 +69,8 @@
   </form>
 </div>
 
+<br>
+
 <div align="center">
   <table border="1" cellpadding="5">
     <tr>
@@ -78,7 +90,7 @@
     <c:forEach var="usuario" items="${listaUsuarios}">
       <tr>
         <td>${usuario.id}</td>
-        <td><a href="agendacontrol?id=<c:out value='${usuario.id}'/>">${usuario.nome}</a></td>
+        <td><a href="agendausuariocontrol?id=<c:out value='${usuario.id}'/>">${usuario.nome}</a></td>
         <td><fmt:formatDate value="${usuario.data_nascimento}" pattern="dd/MM/yyyy" /></td>
         <td>${usuario.sexo}</td>
         <td>

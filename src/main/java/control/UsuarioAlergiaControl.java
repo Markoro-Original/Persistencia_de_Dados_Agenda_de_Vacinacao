@@ -3,6 +3,7 @@ package control;
 import modelo.Alergia;
 import modelo.Usuario;
 import util.AlergiaDAO;
+import util.JPAUtil;
 import util.UsuarioDAO;
 
 import javax.persistence.EntityManager;
@@ -21,12 +22,6 @@ import java.util.List;
 
 @WebServlet("/usuarioalergiacontrol")
 public class UsuarioAlergiaControl extends HttpServlet {
-    private EntityManagerFactory emf;
-
-    @Override
-    public void init(){
-        emf = Persistence.createEntityManagerFactory("vacinacao");
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,7 +30,7 @@ public class UsuarioAlergiaControl extends HttpServlet {
 
         String userID = request.getParameter("id");
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
 
         try {
             AlergiaDAO alergiaDAO = new AlergiaDAO(em);
@@ -74,7 +69,7 @@ public class UsuarioAlergiaControl extends HttpServlet {
         int userID = Integer.parseInt(request.getParameter("id"));
         int alergiaId = Integer.parseInt(request.getParameter("alergia"));
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         try {
@@ -92,7 +87,7 @@ public class UsuarioAlergiaControl extends HttpServlet {
             String tipoSalvar = request.getParameter("tipoSalvar");
 
             if(tipoSalvar.equals("Salvar")){
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("usuariocontrol");
             } else {
                 response.sendRedirect("usuarioalergiacontrol?id=" + usuario.getId());
             }
@@ -106,13 +101,6 @@ public class UsuarioAlergiaControl extends HttpServlet {
             if (em != null && em.isOpen()) {
                 em.close();
             }
-        }
-    }
-
-    @Override
-    public void destroy() {
-        if (emf != null && emf.isOpen()) {
-            emf.close();
         }
     }
 }

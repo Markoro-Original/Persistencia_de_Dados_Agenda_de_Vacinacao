@@ -3,8 +3,10 @@ package util;
 import modelo.Agenda;
 import modelo.SituacaoAgenda;
 import modelo.Usuario;
+import modelo.Vacina;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 public class UsuarioDAO {
@@ -21,6 +23,16 @@ public class UsuarioDAO {
 
     public Usuario buscar(int id) {
         return this.em.find(Usuario.class, id);
+    }
+
+    public List<Usuario> buscarPorNome(String nome) {
+        try {
+            return em.createQuery("SELECT a FROM Usuario a WHERE lower(a.nome) = :nome", Usuario.class)
+                    .setParameter("nome", nome.toLowerCase())
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void excluir(int id) {

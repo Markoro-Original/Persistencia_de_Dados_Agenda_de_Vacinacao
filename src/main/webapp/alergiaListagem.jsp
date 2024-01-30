@@ -18,7 +18,16 @@
     <a href="index.jsp">Menu Principal</a>
 </h2>
 
-<div style="text-align: center; font-size: larger;">
+<div style="display: flex; justify-content: center; gap: 20px;">
+    <form action="alergiacontrol" method="post">
+
+        <input type="hidden" name="acao" value="consultar"/>
+        Pesquisar por Nome:
+        <input type="text" value="" name="nome" size="5"/>
+
+        <button type="submit">Pesquisar</button>
+    </form>
+
     <form action="${pageContext.request.contextPath}/alergiacontrol" method="get">
         <label for="alergiasMaisComuns">Ordenar:</label>
         <select name="alergiasMaisComuns" id="alergiasMaisComuns">
@@ -28,6 +37,8 @@
         <button type="submit">Ordenar</button>
     </form>
 </div>
+
+<br>
 
 <div align="center">
     <table border="1" cellpadding="5">

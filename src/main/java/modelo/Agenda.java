@@ -22,6 +22,8 @@ public class Agenda {
 
     private String observacoes;
 
+    private int dose;
+
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
@@ -34,7 +36,7 @@ public class Agenda {
 
     }
 
-    public Agenda(Date data, String hora, SituacaoAgenda situacao, String observacoes, Usuario usuario, Vacina vacina) {
+    public Agenda(Date data, String hora, SituacaoAgenda situacao, String observacoes, Usuario usuario, Vacina vacina, int dose) {
         super();
         this.data = data;
         this.hora = hora;
@@ -42,6 +44,7 @@ public class Agenda {
         this.observacoes = observacoes;
         this.usuario = usuario;
         this.vacina = vacina;
+        this.dose = dose;
     }
 
     public int getId() {
@@ -102,5 +105,13 @@ public class Agenda {
 
     public void setVacina(Vacina vacina) {
         this.vacina = vacina;
+    }
+
+    public int getDose() {
+        return dose;
+    }
+
+    public void setDose(int dose) {
+        this.dose = dose;
     }
 }

@@ -28,13 +28,6 @@ import java.util.List;
 
 @WebServlet("/agendacontrol")
 public class AgendaControl extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private EntityManagerFactory emf;
-
-    @Override
-    public void init() {
-        emf = Persistence.createEntityManagerFactory("vacinacao");
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,7 +36,7 @@ public class AgendaControl extends HttpServlet {
         String filtroSituacao = request.getParameter("filtroSituacao");
         List<Agenda> listaAgendas;
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
 
         try {
             AgendaDAO agendaDAO = new AgendaDAO(em);
@@ -81,6 +74,28 @@ public class AgendaControl extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        if(acao.equals("delete")){
+            try {
+                deletarAgenda(request, response);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(acao.equals("consultarUsuario")){
+            try {
+                consultarUsuario(request, response);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(acao.equals("consultarVacina")){
+            try {
+                consultarVacina(request, response);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
         if(acao.equals("realizar")){
             try {
                 marcarRealizado(request, response);
@@ -95,13 +110,6 @@ public class AgendaControl extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
-        if(acao.equals("delete")){
-            try {
-                deletarAgenda(request, response);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     public void adicionarAgenda(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
@@ -110,7 +118,7 @@ public class AgendaControl extends HttpServlet {
         String hora = request.getParameter("hora");
         String observacao = request.getParameter("observacao");
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         try {
@@ -130,7 +138,7 @@ public class AgendaControl extends HttpServlet {
                             calendar.setTime(data);
                             calendar.add(Calendar.DAY_OF_MONTH, vacina.getIntervalo()*i);
                             Date novaData = calendar.getTime();
-                            Agenda agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina);
+                            Agenda agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina, i+1);
                             agendaDAO.incluir(agenda);
 
                             break;
@@ -140,7 +148,7 @@ public class AgendaControl extends HttpServlet {
                             calendar.setTime(data);
                             calendar.add(Calendar.WEEK_OF_YEAR, vacina.getIntervalo()*i);
                             novaData = calendar.getTime();
-                            agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina);
+                            agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina, i+1);
                             agendaDAO.incluir(agenda);
 
                             break;
@@ -150,7 +158,7 @@ public class AgendaControl extends HttpServlet {
                             calendar.setTime(data);
                             calendar.add(Calendar.MONTH, vacina.getIntervalo()*i);
                             novaData = calendar.getTime();
-                            agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina);
+                            agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina, i+1);
                             agendaDAO.incluir(agenda);
 
                             break;
@@ -160,14 +168,14 @@ public class AgendaControl extends HttpServlet {
                             calendar.setTime(data);
                             calendar.add(Calendar.YEAR, vacina.getIntervalo()*i);
                             novaData = calendar.getTime();
-                            agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina);
+                            agenda = new Agenda(novaData, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina, i+1);
                             agendaDAO.incluir(agenda);
 
                             break;
                     }
                 }
             } else {
-                Agenda agenda = new Agenda(data, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina);
+                Agenda agenda = new Agenda(data, hora, SituacaoAgenda.AGENDADO, observacao, usuario, vacina, 1);
                 agendaDAO.incluir(agenda);
             }
 
@@ -206,6 +214,52 @@ public class AgendaControl extends HttpServlet {
                 transaction.rollback();
             }
             e.printStackTrace();
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    public void consultarUsuario(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        String nome = request.getParameter("nome");
+
+        List<Agenda> listaAgendas = null;
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            AgendaDAO agendaDAO = new AgendaDAO(em);
+
+            listaAgendas = agendaDAO.buscarPorNomeUsuario(nome);
+            request.setAttribute("listaAgendas", listaAgendas);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("agendaListagem.jsp");
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    public void consultarVacina(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        String nome = request.getParameter("nome");
+
+        List<Agenda> listaAgendas = null;
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            AgendaDAO agendaDAO = new AgendaDAO(em);
+
+            listaAgendas = agendaDAO.buscarPorVacina(nome);
+            request.setAttribute("listaAgendas", listaAgendas);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("agendaListagem.jsp");
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
         } finally {
             if (em != null && em.isOpen()) {
                 em.close();
@@ -268,55 +322,4 @@ public class AgendaControl extends HttpServlet {
             }
         }
     }
-
-    @Override
-    public void destroy() {
-        if (emf != null && emf.isOpen()) {
-            emf.close();
-        }
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

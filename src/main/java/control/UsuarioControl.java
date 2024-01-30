@@ -24,12 +24,6 @@ import java.util.List;
 
 @WebServlet("/usuariocontrol")
 public class UsuarioControl extends HttpServlet {
-    private EntityManagerFactory emf;
-
-    @Override
-    public void init(){
-        emf = Persistence.createEntityManagerFactory("vacinacao");
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +31,7 @@ public class UsuarioControl extends HttpServlet {
         String filtroUF = request.getParameter("filtroUF");
         List<Usuario> listaUsuarios;
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
 
         try {
             UsuarioDAO usuarioDAO = new UsuarioDAO(em);
@@ -76,6 +70,13 @@ public class UsuarioControl extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        if(acao.equals("consultar")){
+            try {
+                consultarUsuario(request, response);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void adicionarUsuario(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
@@ -103,7 +104,7 @@ public class UsuarioControl extends HttpServlet {
             String tipoSalvar = request.getParameter("tipoSalvar");
 
             if(tipoSalvar.equals("Salvar")){
-                response.sendRedirect("index.jsp");
+                response.sendRedirect("usuariocontrol");
             } else {
                 response.sendRedirect("usuarioalergiacontrol?id=" + usuario.getId());
             }
@@ -146,10 +147,26 @@ public class UsuarioControl extends HttpServlet {
         }
     }
 
-    @Override
-    public void destroy() {
-        if (emf != null && emf.isOpen()) {
-            emf.close();
+    public void consultarUsuario(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        String nome = request.getParameter("nome");
+
+        List<Usuario> listaUsuarios = null;
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            UsuarioDAO usuarioDAO = new UsuarioDAO(em);
+
+            listaUsuarios = usuarioDAO.buscarPorNome(nome);
+            request.setAttribute("listaUsuarios", listaUsuarios);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioListagem.jsp");
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         }
     }
 }

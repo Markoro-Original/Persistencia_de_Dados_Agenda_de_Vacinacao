@@ -18,7 +18,25 @@
     <a href="index.jsp">Menu Principal</a>
 </h2>
 
-<div style="text-align: center; font-size: larger;">
+<div style="display: flex; justify-content: center; gap: 20px;">
+
+    <form action="agendacontrol" method="post">
+
+        <input type="hidden" name="acao" value="consultarUsuario"/>
+        Pesquisar por Usuário:
+        <input type="text" value="" name="nome" size="5"/>
+
+        <button type="submit">Pesquisar</button>
+    </form>
+
+    <form action="agendacontrol" method="post">
+        <input type="hidden" name="acao" value="consultarVacina"/>
+        Pesquisar por Vacina:
+        <input type="text" value="" name="nome" size="5"/>
+
+        <button type="submit">Pesquisar</button>
+    </form>
+
     <form action="agendacontrol" method="get">
         <label for="filtroSituacao">Filtrar por Situação:</label>
         <select name="filtroSituacao" id="filtroSituacao">
@@ -30,6 +48,8 @@
         <button type="submit">Filtrar</button>
     </form>
 </div>
+
+<br>
 
 <div align="center">
     <table border="1" cellpadding="5">

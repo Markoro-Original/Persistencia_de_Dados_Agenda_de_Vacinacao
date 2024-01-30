@@ -4,6 +4,7 @@ import modelo.Alergia;
 import modelo.Vacina;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 public class AlergiaDAO {
@@ -20,6 +21,16 @@ public class AlergiaDAO {
 
     public Alergia buscar(int id) {
         return this.em.find(Alergia.class, id);
+    }
+
+    public List<Alergia> buscarPorNome(String nome) {
+        try {
+            return em.createQuery("SELECT a FROM Alergia a WHERE lower(a.nome) = :nome", Alergia.class)
+                    .setParameter("nome", nome.toLowerCase())
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void excluir(int id) {

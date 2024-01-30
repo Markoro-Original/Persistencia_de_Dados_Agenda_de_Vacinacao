@@ -24,21 +24,13 @@ import java.util.List;
 @WebServlet("/alergiacontrol")
 public class AlergiaControl extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-    private EntityManagerFactory emf;
-
-    @Override
-    public void init() {
-        emf = Persistence.createEntityManagerFactory("vacinacao");
-    }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String alergiasMaisComuns = request.getParameter("alergiasMaisComuns");
-        List<Alergia> listaAlergias;
+        List<Alergia> listaAlergias = null;
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
 
         try {
             AlergiaDAO alergiaDAO = new AlergiaDAO(em);
@@ -77,6 +69,13 @@ public class AlergiaControl extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        if(acao.equals("consultar")){
+            try {
+                consultarAlergia(request, response);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void adicionarAlergia(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
@@ -84,7 +83,7 @@ public class AlergiaControl extends HttpServlet {
         String nome = request.getParameter("nome");
         Alergia alergia = new Alergia(nome);
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         try {
@@ -93,7 +92,7 @@ public class AlergiaControl extends HttpServlet {
             alergiaDAO.incluir(alergia);
             transaction.commit();
 
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("alergiacontrol");
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
@@ -132,10 +131,27 @@ public class AlergiaControl extends HttpServlet {
         }
     }
 
-    @Override
-    public void destroy() {
-        if (emf != null && emf.isOpen()) {
-            emf.close();
+    public void consultarAlergia(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+
+        String nome = request.getParameter("nome");
+
+        List<Alergia> listaAlergias = null;
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            AlergiaDAO alergiaDAO = new AlergiaDAO(em);
+
+            listaAlergias = alergiaDAO.buscarPorNome(nome);
+            request.setAttribute("listaAlergias", listaAlergias);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("alergiaListagem.jsp");
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         }
     }
 }

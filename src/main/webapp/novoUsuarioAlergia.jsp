@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,7 @@
                                 <option value="${alergia.id}">${alergia.nome}</option>
                             </c:forEach>
                         </select>
-                    <</td>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="2" align="center">

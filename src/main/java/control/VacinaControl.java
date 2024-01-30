@@ -1,5 +1,6 @@
 package control;
 
+import modelo.Alergia;
 import modelo.Vacina;
 import util.AlergiaDAO;
 import util.JPAUtil;
@@ -21,20 +22,13 @@ import java.util.List;
 
 @WebServlet("/vacinacontrol")
 public class VacinaControl extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private EntityManagerFactory emf;
-
-    @Override
-    public void init() {
-        emf = Persistence.createEntityManagerFactory("vacinacao");
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String vacinasMaisAgendadas = request.getParameter("vacinasMaisAgendadas");
         List<Vacina> listaVacinas;
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
 
         try {
             VacinaDAO vacinaDAO = new VacinaDAO(em);
@@ -76,6 +70,13 @@ public class VacinaControl extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        if(acao.equals("consultar")){
+            try {
+                consultarVacina(request, response);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void adicionarVacina(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
@@ -94,7 +95,7 @@ public class VacinaControl extends HttpServlet {
             vacina.setIntervalo(intervalo);
         }
 
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         try {
@@ -103,7 +104,7 @@ public class VacinaControl extends HttpServlet {
             vacinaDAO.incluir(vacina);
             transaction.commit();
 
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("vacinacontrol");
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
@@ -142,10 +143,26 @@ public class VacinaControl extends HttpServlet {
         }
     }
 
-    @Override
-    public void destroy() {
-        if (emf != null && emf.isOpen()) {
-            emf.close();
+    public void consultarVacina(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        String nome = request.getParameter("nome");
+
+        List<Vacina> listaVacinas = null;
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            VacinaDAO vacinaDAO = new VacinaDAO(em);
+
+            listaVacinas = vacinaDAO.buscarPorNome(nome);
+            request.setAttribute("listaVacinas", listaVacinas);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("vacinaListagem.jsp");
+            dispatcher.forward(request, response);
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         }
     }
 }
